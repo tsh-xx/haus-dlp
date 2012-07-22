@@ -141,20 +141,20 @@ try:
     time_now = time.time()
 
     # Read all inputs
-    # Port 1 = Temperature (HW)
+    # Port 1 = Temperature (DHW Flow)
     for i in range(NTRY):    # Allow retries in case of blown reading
-        ser.write(TI[0])
+        ser.write(TI[1])
         time.sleep(T0)    # slowdown -> more reliable?
         t_raw = ser.read(2)
         # This temperature is always > 0...
         temp_hw = 0.0625 * (ord(t_raw[1]) << 8 | ord(t_raw[0]))
-        if temp_hw < 60.:    # i.e., normal reading
+        if temp_hw < 70.:    # i.e., normal reading
             break
         time.sleep(T_RETRY)    # Try waiting a little
         ermsg = "%s HW Temp retry" % time_string
         print >>evtfd, ermsg
         print >>sys.stderr, ermsg
-    if temp_hw > 60. : temp_hw = TEMP_INVAL  # could be disconnected probe?
+    if temp_hw > 70. : temp_hw = TEMP_INVAL  # could be disconnected probe?
     time.sleep(T1)        # slow down inter-port
 
     # Port 2 = HW Circulator on/off
@@ -217,9 +217,9 @@ try:
             (time_string,z3_state,dtime)
     time.sleep(T1)        # slow down inter-port
 
-        # Port 7 = Temperature (Ambient)
+        # Port 7 = Temperature (ASHP)
     for i in range(NTRY):
-        ser.write(TI[6])
+        ser.write(TI[0])
         time.sleep(T0)    # slowdown -> more reliable?
         ta_raw = ser.read(2)
         # This temperature can be < 0... must check sign
@@ -227,13 +227,13 @@ try:
         if rawt & 0x8000:               # Check sign bit
             rawt = NEG_MASK | rawt      # making full precision neg. int.
         tempa_hw = 0.0625 * rawt
-        if tempa_hw < 60.:    # normal condition
+        if tempa_hw < 70.:    # normal condition
             break        # valid temp, probably
         time.sleep(T_RETRY)
         ermsg = "%s Amb. Temp. retry" % time_string
         print >>evtfd, ermsg
         print >>sys.stderr, ermsg
-        if tempa_hw > 60. : tempa_hw = TEMP_INVAL
+        if tempa_hw > 70. : tempa_hw = TEMP_INVAL
 
     # Print and log result
     logitem = "%s %.2f %d %d %d %d %d %.2f" % (time_string, temp_hw, 

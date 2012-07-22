@@ -60,13 +60,16 @@ def report(date):		# report from log of given date
 		try:
 			hhmmss = line[:6]
 			thw = float(line[7:12])
-			fhw = int(line[13:14])
-			ffurn = int(line[15:16])
-			fz1 = int(line[17:18])
-			fz2 = int(line[19:20])
-			fz3 = int(line[21:22])
-			tamb = float(line[23:])
+			thw2 = float(line[13:18])
+			ffurn = int(line[19:20])
+			fz1 = int(line[21:22])
+			fz2 = int(line[23:24])
+			fz3 = int(line[25:26])
+			tamb = float(line[27:])
 		except ValueError:
+			print line[7:12]
+			print line[13:18]
+			print line[27:]
 			continue	# Don't count a bad line
 		nsamples += 1
 		thw_min = min(thw_min,thw)
@@ -74,7 +77,6 @@ def report(date):		# report from log of given date
 		tamb_min = min(tamb_min,tamb)
 		tamb_max = max(tamb_max,tamb)
 		tamb_sum += tamb
-		if fhw : 	nhw += 1
 		if ffurn : 	nfurn += 1
 		if fz1 :	nz1 += 1
 		if fz2 :	nz2 += 1
