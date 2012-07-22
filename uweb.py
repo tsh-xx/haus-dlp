@@ -71,13 +71,13 @@ def write_prev_up_next(dayhtmlf, idate, to_process):
         dayhtmlf.write(' <a href="%s">prev</a>' % 
             (HTMLPRE + to_process[idate-1] + HTMLEXT,))
     else:
-        dayhtmlf.write('     ')    # for first item
+        dayhtmlf.write('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')    # for first item
     dayhtmlf.write(' -- <a href="/uapp/html/index.html">up</a> -- ')
     if idate < len(to_process)-1:                       # make "next"
         dayhtmlf.write('<a href="%s">next</a> ]</p>\n' % 
             (HTMLPRE + to_process[idate+1] + HTMLEXT,))
     else:
-        dayhtmlf.write('     ]</p>\n')  # last item
+        dayhtmlf.write('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p>\n')  # last item
 
 # canned header & trailer HTML files
 HEADER = "day_header.html"
@@ -146,50 +146,44 @@ for idate in range(len(to_process)):    # use index to help with prev/next ptrs
             dayhtmlf.write("<pre>\n")       # preformatted
             for line in statsf:
                 dayhtmlf.write(line)        # copy statsfile
-            dayhtmlf.write("
-\n") # close preformatted
-           statsf.close()
-           break
-   # write note text, if available
-   for y in ndir:
-       if y.find(fdate) > -1:              # found a note
-           notef = open(os.path.join(NOTESDIR,y), 'r')
-dayhtmlf.write("
-Note:\n")       # preformatted
+            dayhtmlf.write("</pre>\n")      # close preformatted
+            statsf.close()
+            break
+    # write note text, if available
+    for y in ndir:
+        if y.find(fdate) > -1:              # found a note
+            notef = open(os.path.join(NOTESDIR,y), 'r')
+            dayhtmlf.write("<pre>Note:\n")       # preformatted
             for line in notef:
                 dayhtmlf.write(line)
-            dayhtmlf.write("
-\n") # close preformatted
-           notef.close()
-           break
-   # insert plot, if available
-   for y in plotdir:
-       if y.find(fdate) > -1:              # found a plot, incl image
-           dayhtmlf.write('<img src="%s" />\n' % os.path.join(HTTPLINK,REPDIR,y))
-           break
-   # insert link to detail log, if available
-   for y in ldir:
-       if y.find(fdate) > -1:
-dayhtmlf.write('
-See detailed log: <a href="%s">%s</a>
-
-\n' %
-               (os.path.join(HTTPLINK,FINDIR,y), y))
-           break
-   # write prev, up, next links
-   write_prev_up_next(dayhtmlf, idate, to_process)
-   # write trailer html
-   for line in trailerf:
-       dayhtmlf.write(line)
-   trailerf.close()
-   dayhtmlf.close()
-   # Add link entry to index file
-   thisLink = os.path.join(HTTPLINK, dayhtmlfn)    # HTTP link to this new file
-   ixf.write('<a href="%s">%s</a>
-\n' % (thisLink, fdate_expanded))
-       
-Finish the index file
-ixtrf = open(IXTRAILER,'r') for line in ixtrf:
-
-   ixf.write(line)
-ixtrf.close() ixf.close()</pre>
+            dayhtmlf.write("</pre>\n")      # close preformatted
+            notef.close()
+            break
+    # insert plot, if available
+    for y in plotdir:
+        if y.find(fdate) > -1:              # found a plot, incl image
+            dayhtmlf.write('<img src="%s" />\n' % os.path.join(HTTPLINK,REPDIR,y))
+            break
+    # insert link to detail log, if available
+    for y in ldir:
+        if y.find(fdate) > -1:
+            dayhtmlf.write('<p>See detailed log: <a href="%s">%s</a></p>\n' % 
+                (os.path.join(HTTPLINK,FINDIR,y), y))
+            break
+    # write prev, up, next links
+    write_prev_up_next(dayhtmlf, idate, to_process)
+    # write trailer html
+    for line in trailerf:
+        dayhtmlf.write(line)
+    trailerf.close()
+    dayhtmlf.close()
+    # Add link entry to index file
+    thisLink = os.path.join(HTTPLINK, dayhtmlfn)    # HTTP link to this new file
+    ixf.write('<a href="%s">%s</a><br />\n' % (thisLink, fdate_expanded))
+        
+# Finish the index file
+ixtrf = open(IXTRAILER,'r')
+for line in ixtrf:
+    ixf.write(line)
+ixtrf.close()
+ixf.close()
