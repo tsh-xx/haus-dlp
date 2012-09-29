@@ -1,0 +1,31 @@
+#show output
+#print file
+file="logs/processed/lpc_20120803.log"
+set output "reports/plot20120803_switch.png"
+set terminal png size 1200, 900
+set xdata time
+set timefmt "%H%M%S"
+set xrange ["073000":"085959"]
+set format x "%H%M"
+set format y "%4.0f"
+set key on
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style data line
+set multiplot layout 2,1
+set yrange [10:70]
+set label "ASHP (C)" at graph 0.02,0.8
+plot file using 1:5 title "ashp_temp",\
+     file using 1:7 title "ashp_return",\
+     file using 1:6 title "ambient_temp",\
+     file using 1:8 title "Compressor"
+unset label
+set yrange [32:55]
+set key on
+set label "Hot Water top/takeoff (C)" at graph 0.02,0.6
+plot file using 1:2 title "T_tank top pocket", \
+     file using 1:4 title "T_takeoff flow" ,\
+     file using 1:($3+14) title "T_Lower+14",\
+     file using 1:(($2 + $3)/2) title "tank",\
+     file using 1:($4-$6+20) title "flow-amb+20" 
+unset multiplot

@@ -1,0 +1,23 @@
+#show output
+#print file
+#file="logs/pending/0723.log"
+#set output "reports/120723.png"
+set terminal png size 1200, 800
+set xdata time
+set timefmt "%H%M%S"
+set xrange ["000000":"235959"]
+set format x "%H%M"
+set format y "%4.0f"
+set key on
+set style data line
+set multiplot layout 3,1
+set yrange [0:45]
+set label "ASHP (C)" at graph 0.02,0.8
+plot file using 1:5 title "ashp_temp",\
+     file using 1:7 title "ashp_return",\
+     file using 1:6 title "ambient_temp",\
+     file using 1:9 title "Room"
+set yrange [16:29]
+plot file using 1:7 title "ashp_return",\
+     file using 1:6 title "ambient_temp",\
+     file using 1:9 title "Room"
